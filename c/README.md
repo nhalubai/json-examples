@@ -27,9 +27,9 @@ There are some prerequisits:
 
 #### json-c
 
-    wget http://oss.metaparadigm.com/json-c/json-c-0.9.tar.gz
-    tar xvf json-c-0.9.tar.gz
-    cd json-c-0.9
+    git clone git://github.com/json-c/json-c.git
+    cd json-c
+    sh autogen.sh
     ./configure
     make
     sudo make install

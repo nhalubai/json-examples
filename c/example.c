@@ -310,7 +310,7 @@ void processTrack (char* data) {
         printf("        altitudeAngle: %f\n", json_object_get_double(altitudeAngle));
         printf("    stats:\n");
         printf("        rcs: %f\n", json_object_get_double(rcs));
-        printf("    timestamp: %d\n", json_object_get_int(timestamp));
+        printf("    timestamp: %d\n", json_object_get_int64(timestamp));
     }
 }
 
