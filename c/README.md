@@ -11,6 +11,7 @@ This example will:
 There are some prerequisits:
 
   * [json-c](http://oss.metaparadigm.com/json-c/) (v0.9): json parsing library for C
+    * [json-c docs](github.com/json-c/json-c) (actually they're just the header files and tests)
   * [libcurl](http://curl.haxx.se/libcurl/) (v7): library for making HTTP calls
   * [cmake](http://www.cmake.org/) (v2.8): makefile generator for C
 

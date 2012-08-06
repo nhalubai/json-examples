@@ -3,6 +3,7 @@ The C# example code is located in a [Git repository here](https://github.com/Spo
 This code requires the following dependencies:
 
   * [JSON.NET](http://james.newtonking.com/pages/json-net.aspx)- v4.5r5 [Download Page](http://json.codeplex.com/releases/view/87440#)
+    * [JSON.NET Documentation](http://james.newtonking.com/projects/json/help/)
 
 This depends on the project files being at:
 - JSON.Net: '`./Json45r5/Source/Src/Newtonsoft.Json`'
@@ -33,6 +34,16 @@ This example will:
 - grab the '`altitude`' value and do some simple modifications to it
     - example using JSON.NET
 - post the changed JSON data back to the Spotter
+
+### Compile and Run the example code (with Visual Studio)
+
+  1. Install [NuGet](http://nuget.org/)
+  2. Install [Json.NET via NuGet](http://nuget.org/packages/Newtonsoft.Json),
+run the following command in the [Package Manager Console](http://docs.nuget.org/docs/start-here/using-the-package-manager-console)
+
+        PM> Install-Package Newtonsoft.Json
+
+TODO... get instructions from somebody who uses Visual Studio
 
 ### Code Walkthrough ###
 
