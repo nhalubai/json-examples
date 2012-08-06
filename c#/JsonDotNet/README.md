@@ -12,23 +12,21 @@ This depends on the project files being at:
 
     wget 'http://download.codeplex.com/Download?ProjectName=json&DownloadId=376473&FileTime=129809414388100000&Build=18857' \
       -O Json45r5.zip
-    unzip Json45r5.zip -d Json45r5.zip
+    unzip Json45r5.zip -d Json45r5
 
     pushd Json45r5/Source/Src/Newtonsoft.Json/
     xbuild Newtonsoft.Json.csproj 
     popd
 
-    xbuild example.csproj
+    xbuild poll.csproj
 
-    mono ./bin/Debug/example.exe 169.254.254.254 # IP of spotter
+    mono ./bin/Debug/poll.exe 169.254.254.254 # IP of spotter
 
 To install, compile using Visual Studio, Mono Develop, or xbuild:
 
-    xbuild example.csproj
+    xbuild poll.csproj
 
-There are examples using both libraries, so only one is necessary.
-
-This example will:
+The poll example will:
 
 - get the `/geolocation.json` resource from a Spotter
 - grab the '`altitude`' value and do some simple modifications to it
