@@ -16,7 +16,7 @@ fi
 
 RANDKEY=`echo "obase=16; "${RANDOM}"" | bc`
 RANDVAL=`echo "obase=16; "${RANDOM}"" | bc`
-curl "${TARGET}" \                                                          
+curl "${TARGET}" \
     -X POST \
     -H "Content-Type: application/json" \
     -d '{
