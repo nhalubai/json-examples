@@ -8,7 +8,7 @@
 #include <curl/easy.h>
 
 // json parser
-#include <json/json.h>
+#include <json-c/json.h>
 
 // resource to get/set
 #define RESOURCE "/geolocation.json"

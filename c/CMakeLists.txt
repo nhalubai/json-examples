@@ -4,4 +4,4 @@ project(example)
 add_executable(example example.c)
 
 target_link_libraries(example curl)
-target_link_libraries(example json)
+target_link_libraries(example json-c)

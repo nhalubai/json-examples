@@ -30,10 +30,12 @@ There are some prerequisits:
     git clone git://github.com/json-c/json-c.git
     cd json-c
     sh autogen.sh
-    ./configure
+    ./configure --disable-oldname-compat
     make
     sudo make install
     sudo ldconfig
+
+Note: `#include <json/json.h>` and `-ljson` have changed to `#include <json-c/json.h>` and `-ljson-c`
 
 #### cmake
 
