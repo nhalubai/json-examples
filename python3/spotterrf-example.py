@@ -78,7 +78,8 @@ def change_settings(host, port):
     #conn.send(json.dumps(trackSettings))
     res = conn.getresponse()
     try:
-        print(res.read())
+        text = res.read().decode('utf-8')
+        print(text)
     except:
         print("couldn't get response:", sys.exc_info()[0])
 
