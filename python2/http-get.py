@@ -6,7 +6,7 @@ except ImportError:
 import sys
 
 try:
-    fp = urllib.urlopen("http://stackoverflow.com")
+    fp = urllib.urlopen("http://foobar3000.com/echo/example.json")
 except:
     print("couldn't connect:", sys.exc_info()[0])
     exit(1)
