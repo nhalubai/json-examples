@@ -13,10 +13,11 @@
       chunks.push(chunk);
     });
     response.on('end', function () {
-      var data = Buffer.concat(chunks)
+      var text = Buffer.concat(chunks).toString('utf8')
+        , obj = JSON.parse(text)
         ;
 
-      console.log(data.toString('utf8'));
+      console.log(obj);
     });
   });
 
