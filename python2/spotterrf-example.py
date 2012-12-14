@@ -43,7 +43,7 @@ def count_tracks(url):
 
 def change_settings(host, port):
     headers = {
-        "Content-Type": "application/json; utf-8"
+        "Content-Type": "application/json; charset=utf-8"
     }
     # These are the group of settings adjusted to produce desired Wind Settings
     detectionSettings = {
