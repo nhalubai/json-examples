@@ -1,5 +1,6 @@
 import json
 import urllib
+import httplib
 import sys
 
 
@@ -37,10 +38,43 @@ def count_tracks(url):
     data = fp.read()
     print(data)
     obj = json.loads(data)
-    print(obj)
+    print(str(len(obj.get('result'))))
 
+
+def change_settings(host, port):
+    headers = {
+        "Content-Type": "application/json; utf-8"
+    }
+    # These are the group of settings adjusted to produce desired Wind Settings
+    detectionSettings = {
+        "sensitivity": 7
+    }
+    trackSettings = {
+        "minDetection": 6, "rangeThreshold": 4, "activationTime": 2
+    }
+
+    conn = httplib.HTTPConnection(host, port)
+    conn.request('POST', '/detections.json/settings', headers=headers)
+    conn.send(json.dumps(detectionSettings))
+    res = conn.getresponse()
+    try:
+        print(res.read())
+    except:
+        print("couldn't get response:", sys.exc_info()[0])
+
+    conn = httplib.HTTPConnection(host, port)
+    conn.request('POST', '/tracks.json/settings', headers=headers)
+    conn.send(json.dumps(trackSettings))
+    res = conn.getresponse()
+    try:
+        print(res.read())
+    except:
+        print("couldn't get response:", sys.exc_info()[0])
 
 if '__main__' == __name__:
     url = "http://remote.spotterrf.com:7773/"
+    host = 'remote.spotterrf.com'
+    port = 7773
     exit_unless_compatible(url)
     count_tracks(url)
+    change_settings(host, port)

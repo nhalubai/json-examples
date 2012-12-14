@@ -1,4 +1,8 @@
-import urllib
+try:
+    import urllib2 as urllib
+except ImportError:
+    import urllib
+
 import sys
 
 try:
