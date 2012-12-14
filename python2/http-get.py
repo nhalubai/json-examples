@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+
+"""
+This should be the equivalent of
+
+curl foobar3000.com/echo/example.json \
+  -X GET \
+"""
+
 try:
     import urllib2 as urllib
 except ImportError:
