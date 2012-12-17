@@ -10,7 +10,7 @@
       // what it means is 'method'
       type: 'POST'
       // contentType refers to the uploaded data
-    , contentType: 'json'
+    , contentType: 'application/json; charset=utf-8'
       // 'data' is a historical misnomer
       // what it means is 'body'
     , data: JSON.stringify({
