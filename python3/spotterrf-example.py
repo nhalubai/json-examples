@@ -7,7 +7,7 @@ import sys
 
 
 def exit_unless_compatible(url):
-    compatible = True
+    compatible = False
 
     url = Request(url + 'version.json')
     try:

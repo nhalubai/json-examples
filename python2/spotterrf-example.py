@@ -5,7 +5,7 @@ import sys
 
 
 def exit_unless_compatible(url):
-    compatible = True
+    compatible = False
 
     try:
         fp = urllib.urlopen(url + 'version.json')
