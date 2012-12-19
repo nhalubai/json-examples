@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 from urllib.request import urlopen, Request
 from http.client import HTTPConnection
 import json
