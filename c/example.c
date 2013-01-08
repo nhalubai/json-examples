@@ -48,7 +48,7 @@ int getSettings(char* url, char* data) {
     curl_easy_setopt(pCurl, CURLOPT_WRITEDATA, data);
 
     // set a 1 second timeout
-    curl_easy_setopt(pCurl, CURLOPT_TIMEOUT, 1);
+    curl_easy_setopt(pCurl, CURLOPT_TIMEOUT, 3);
 
     // synchronous, but we don't really care
     res = curl_easy_perform(pCurl);
@@ -81,7 +81,7 @@ int getSettingsGzip(char* url, char* data) {
     curl_easy_setopt(pCurl, CURLOPT_ACCEPT_ENCODING, "gzip;q=1.0");
 
     // set a 1 second timeout
-    curl_easy_setopt(pCurl, CURLOPT_TIMEOUT, 1);
+    curl_easy_setopt(pCurl, CURLOPT_TIMEOUT, 3);
 
     // synchronous, but we don't really care
     res = curl_easy_perform(pCurl);
@@ -139,7 +139,7 @@ int postSettings(char* url, char* data) {
     curl_easy_setopt(pCurl, CURLOPT_FAILONERROR, 1);
 
     // set a 1 second timeout
-    curl_easy_setopt(pCurl, CURLOPT_TIMEOUT, 1);
+    curl_easy_setopt(pCurl, CURLOPT_TIMEOUT, 3);
 
     // synchronous, but we don't really care
     res = curl_easy_perform(pCurl);
@@ -310,12 +310,14 @@ void processTrack (char* data) {
         printf("        altitudeAngle: %f\n", json_object_get_double(altitudeAngle));
         printf("    stats:\n");
         printf("        rcs: %f\n", json_object_get_double(rcs));
-        printf("    timestamp: %d\n", json_object_get_int64(timestamp));
+        printf("    timestamp: %ld\n", json_object_get_int64(timestamp));
     }
 }
 
 int main(int argc, char** argv) {
+    // variable to hold return values for error checking
     int res;
+    // keep track of where in the buffer to add fragments of URLs
     int iLen;
 
     // should be big enough for most things
@@ -323,7 +325,7 @@ int main(int argc, char** argv) {
     char url[256];
     char trackUrl[256];
     char data[2048];
-    char trackData[2048];
+    char trackData[50*1024];
 
     // print usage if the input doesn't match what is expected
     if (argc != 2) {
@@ -352,6 +354,8 @@ int main(int argc, char** argv) {
     // get the current settings
     res = getSettings(url, data);
 
+    // should handle the libcurl return value here
+
     // output the starting settings
     printf("Original Settings:\n%s\n\n", data);
 
@@ -363,7 +367,9 @@ int main(int argc, char** argv) {
     strcpy(&url[iLen], "/settings");
 
     // set our new and improved settings
-    postSettings(url, data);
+    res = postSettings(url, data);
+
+    // should handle the libcurl return value here
 
     printf("Result from POST:\n%s\n\n", data);
 
@@ -371,6 +377,8 @@ int main(int argc, char** argv) {
 
     // get the current settings, but gzipped
     res = getSettingsGzip(url, data);
+
+    // should handle the libcurl return value here
 
     // output our new settings
     printf("New Settings (gzipped response):\n%s\n", data);
@@ -380,6 +388,8 @@ int main(int argc, char** argv) {
 
     // get the current track information
     res = getSettings(trackUrl, trackData);
+
+    // should handle the libcurl return value here
 
     // iterate over all tracks
     processTrack(trackData);
