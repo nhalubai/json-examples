@@ -36,6 +36,9 @@ There are some prerequisits:
 
 Note: `#include <json/json.h>` and `-ljson` have changed to `#include <json-c/json.h>` and `-ljson-c`
 
+You may also need to run `sudo ldconfig /usr/local/bin` (or wherever the library
+in installed on your system) if you get link errors.
+
 #### cmake
 
     wget http://www.cmake.org/files/v2.8/cmake-2.8.7.tar.gz

@@ -14,21 +14,33 @@
 #define RESOURCE "/geolocation.json"
 #define TRACKS "/tracks.json"
 
+// should be big enough for most things
+// more flexibility may need to be added for a real application
+// An average tracks packet is about 1.5k (4 tracks), and settings resources
+// are generally < .5k.
+#define URL_SIZE 256
+#define BUF_SIZE 10*1024
+
+long bytesWritten = 0;
+long bytesRead = 0;
+
 static int writeFn(void* buf, size_t len, size_t size, void* userdata) {
-    size_t sLen;
+    size_t sLen = len * size;
 
     // if this is zero, then it's done
     // we don't do any special processing on the end of the stream
-    if (len * size > 0) {
-        // get the length of the current string
-        sLen = strlen((char*)userdata);
+    if (sLen > 0) {
+        // >= to account for terminating null
+        if (bytesWritten + sLen >= BUF_SIZE) {
+            fprintf(stderr, "Buffer size exceeded.\n  Buffer length: %d\n  Current length: %d\n  Bytes to write: %d\n", BUF_SIZE, bytesWritten, sLen);
+            return 0;
+        }
 
-        // copy the data from the buffer
-        // there are no checks here, but the buffer should be big enough
-        strncpy(&((char*)userdata)[sLen], (char*)buf, (len * size));
+        memcpy(&((char*)userdata)[bytesWritten], buf, sLen);
+        bytesWritten += sLen;
     }
 
-    return len * size;
+    return sLen;
 }
 
 int getSettings(char* url, char* data) {
@@ -38,6 +50,9 @@ int getSettings(char* url, char* data) {
     if (!pCurl) {
         return 0;
     }
+
+    bytesWritten = 0;
+    memset(data, 0, BUF_SIZE);
 
     // setup curl
     curl_easy_setopt(pCurl, CURLOPT_URL, url);
@@ -69,6 +84,8 @@ int getSettingsGzip(char* url, char* data) {
         return 0;
     }
 
+    bytesWritten = 0;
+
     // setup curl
     curl_easy_setopt(pCurl, CURLOPT_URL, url);
     curl_easy_setopt(pCurl, CURLOPT_WRITEFUNCTION, writeFn);
@@ -93,14 +110,22 @@ int getSettingsGzip(char* url, char* data) {
 }
 
 static size_t read_callback(void* ptr, size_t size, size_t nmemb, void* userdata) {
-    int tLen = strlen(userdata);
+    size_t tLen;
+    char* str;
+    if (!userdata) {
+        return 0;
+    }
+
+    str = (char*)userdata;
+    tLen = strlen(&str[bytesRead]);
+    if (tLen > size * nmemb) {
+        tLen = size * nmemb;
+    }
 
     if (tLen > 0) {
         // assign the string as the data to be sent
-        strcpy(ptr, userdata);
-
-        // clear the string
-        ((char*)userdata)[0] = 0;
+        memcpy(ptr, &str[bytesRead], tLen);
+        bytesRead += tLen;
     }
 
     return tLen;
@@ -108,7 +133,7 @@ static size_t read_callback(void* ptr, size_t size, size_t nmemb, void* userdata
 
 int postSettings(char* url, char* data) {
     int res = -1;
-    char tmp[2048];
+    char tmp[BUF_SIZE];
     CURL* pCurl = curl_easy_init();
 
     // we need to set headers later
@@ -118,8 +143,11 @@ int postSettings(char* url, char* data) {
         return 0;
     }
 
+    bytesWritten = 0;
+    bytesRead = 0;
+
     // we'll use data to store the result
-    memset(tmp, 0, 2048);
+    memset(tmp, 0, BUF_SIZE);
 
     // add the application/json content-type
     // so the server knows how to interpret our HTTP POST body
@@ -149,7 +177,7 @@ int postSettings(char* url, char* data) {
     curl_slist_free_all(headers);
 
     // copy the response to data
-    strcpy(data, tmp);
+    memcpy(data, tmp, BUF_SIZE);
     return res;
 }
 
@@ -157,6 +185,7 @@ void handleSettings(char* data) {
     struct json_object* settingsJson;
     struct json_object* results;
     struct json_object* altitudeObj;
+    struct json_object* sendObj;
     double alt;
 
     // parse the string into json
@@ -187,11 +216,13 @@ void handleSettings(char* data) {
 
     printf("New altitude: %f\n\n", alt);
 
+    sendObj = json_object_new_object();
     altitudeObj = json_object_new_double(alt);
-    json_object_object_add(results, "altitude", altitudeObj);
+    json_object_object_add(sendObj, "altitude", altitudeObj);
 
     // return the updated info
-    strcpy(data, json_object_to_json_string(results));
+    memset(data, 0, BUF_SIZE);
+    strcpy(data, json_object_to_json_string(sendObj));
 }
 
 void setTrackUrl (char* url, char* host) {
@@ -242,7 +273,7 @@ void processTrack (char* data) {
     struct json_object* rcs;
 
     struct json_object* timestamp;
-    
+
     int length = 0;
     int i = 0;
 
@@ -320,24 +351,22 @@ int main(int argc, char** argv) {
     // keep track of where in the buffer to add fragments of URLs
     int iLen;
 
-    // should be big enough for most things
-    // more flexibility should be added for a real application
-    char url[256];
-    char trackUrl[256];
-    char data[2048];
-    char trackData[50*1024];
+    char url[URL_SIZE];
+    char trackUrl[URL_SIZE];
+    char data[BUF_SIZE];
+    char trackData[BUF_SIZE];
 
     // print usage if the input doesn't match what is expected
     if (argc != 2) {
-        printf("Usage: example <url>\n");
+        printf("Usage: example <url>\n  url: address of a spotter (e.g. 169.254.254.254)\n");
         return -1;
     }
 
     // clear our memory
     memset(url, 0, sizeof(url));
     memset(trackUrl, 0, sizeof(trackUrl));
-    memset(data, 0, sizeof(data));
-    memset(trackData, 0, sizeof(trackData));
+    memset(data, 0, BUF_SIZE*sizeof(char));
+    memset(trackData, 0, BUF_SIZE*sizeof(char));
 
     // the url is the second arg
     strcpy(url, argv[1]);
@@ -353,8 +382,11 @@ int main(int argc, char** argv) {
 
     // get the current settings
     res = getSettings(url, data);
-
-    // should handle the libcurl return value here
+    if (res != 0) {
+        // error occurred
+        fprintf(stderr, "CURL error: %d\n", res);
+        return res;
+    }
 
     // output the starting settings
     printf("Original Settings:\n%s\n\n", data);
@@ -368,17 +400,21 @@ int main(int argc, char** argv) {
 
     // set our new and improved settings
     res = postSettings(url, data);
-
-    // should handle the libcurl return value here
+    if (res != 0) {
+        fprintf(stderr, "CURL error (from postSettings): %d\n", res);
+        return res;
+    }
 
     printf("Result from POST:\n%s\n\n", data);
 
-    memset(data, 0, 2048);
+    memset(data, 0, BUF_SIZE);
 
     // get the current settings, but gzipped
     res = getSettingsGzip(url, data);
-
-    // should handle the libcurl return value here
+    if (res != 0) {
+        fprintf(stderr, "CURL error (from getSettingsGzip): %d\n", res);
+        return res;
+    }
 
     // output our new settings
     printf("New Settings (gzipped response):\n%s\n", data);
@@ -388,8 +424,10 @@ int main(int argc, char** argv) {
 
     // get the current track information
     res = getSettings(trackUrl, trackData);
-
-    // should handle the libcurl return value here
+    if (res != 0) {
+        fprintf(stderr, "CURL error (from getSettings): %d\n", res);
+        return res;
+    }
 
     // iterate over all tracks
     processTrack(trackData);
