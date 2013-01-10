@@ -1,22 +1,6 @@
-# json-examples
+# UNTESTED CODE BRANCH
 
-Examples of JSON parsing / generation and http requests in various languages
-
-# Solutions Explored
-
-  0. [jQuery](http://jquery.com) (in Browser, all the hard stuff is handled)
-  0. [NodeJS](http://nodejs.org) (Best HTTP and JSON support)
-  0. [Ruby](http://ruby-lang.org)
-  0. [Python](http://python.org)
-  0. [GoLang](http://golang.org)
-  0. [luvit](http://luvit.io) (lua)
-  0. C#
-  0. Java
-  0. curl (exec from any language)
-  0. bash
-  0. C
-
-ProTip: Use an Application Language (NodeJS, Python, Ruby) to do all of your HTTP / JSON work coupled with some sort of message passing (such as packing a struct) if you need to use a Systems Language (C, Java, C#). Or just do it all in Go. That would be the best language.
+This code is intended to demonstrate the basics of JSON and HTTP interactions in each language present. It is provided as-is; see the [Master branch README.md](https://github.com/SpotterRF/json-examples/blob/master/README.md) for more detail.
 
 # IMPORTANT
 
@@ -40,6 +24,3 @@ The eventual goal is to have examples for all of the following in each language:
   * Iterating over objects and arrays
   * JSON stringifying (encoding / serializing)
 
-# SDK
-
-One day we'll have an SDK...
