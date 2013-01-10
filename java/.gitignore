@@ -1,5 +1,0 @@
-*.class
-lib
-
-# ignore generated Makefile
-Makefile
