@@ -20,7 +20,7 @@ Demo code has been written in the following languages:
 
 However, most of the code we provide is not very robust, so it is in the [**"untested"** branch of this repository](https://github.com/SpotterRF/json-examples/tree/untested). It is provided so the astute programmer can see the basics of normal JSON and HTTP interactions in the language, rather than as a complete, solid application off of which others may build.
 
-Code that *is* tested and suitable as a starting point is in the [master branch](https://github.com/SpotterRF/json-examples). Languages that fall into this category are:
+Code that **is** tested and suitable as a starting point is in the [master branch](https://github.com/SpotterRF/json-examples). Languages that fall into this category are:
 
   0. C
 
