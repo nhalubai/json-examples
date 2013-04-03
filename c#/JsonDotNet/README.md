@@ -35,13 +35,13 @@ The poll example will:
 
 ### Compile and Run the example code (with Visual Studio)
 
-  1. Install [NuGet](http://nuget.org/)
+  1. Install [NuGet](http://nuget.org/), Microsoft's own "NPM" analogue for C#
   2. Install [Json.NET via NuGet](http://nuget.org/packages/Newtonsoft.Json),
 run the following command in the [Package Manager Console](http://docs.nuget.org/docs/start-here/using-the-package-manager-console)
 
         PM> Install-Package Newtonsoft.Json
 
-TODO... get instructions from somebody who uses Visual Studio
+Visual Studio makes opening and editing projects easy. Simply open the `.sln` file.
 
 ### Code Walkthrough ###
 
